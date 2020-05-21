@@ -24,6 +24,8 @@ namespace DAL
         public int MenuId { get; set; }
         public string MenuName { get; set; }
         public string Category { get; set; }
+        public string ImageSrc { get; set; }
+        public string Description { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ItemOrdered> ItemOrdereds { get; set; }

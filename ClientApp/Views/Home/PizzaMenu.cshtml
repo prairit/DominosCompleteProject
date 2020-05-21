@@ -1,0 +1,238 @@
+﻿
+@{
+    ViewBag.Title = "PizzaMenu";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link rel="stylesheet" href="~/css/PizzaMenu.css">
+
+<div id="topImages" class="my-5">
+    <div class="row text-center">
+        <div class="ml-auto">
+            <img src="~/Content/images/banner.png" height="130" width="500" />
+        </div>
+        <div class="mr-auto">
+            <img src="~/Content/images/bann.png" height="130" />
+        </div>
+    </div>
+</div>
+
+<div class="p-4">
+
+    <div class="col-3" id="cart">
+        <div class="card">
+            <div id="emptyCart">
+                <img src="@Url.Content("~/Content/images/cart.png")" alt="" id="cartImg" class="ml-auto">
+                <div class="card-body">
+                    <h5 class="text-center mt-5">YOUR CART IS EMPTY</h5>
+                    <p class="text-center">Please add some items from the menu.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-8">
+        <div class="text-center my-4">
+            <hr style="width:40%;float:left" /><strong style="color:green">VEG PIZZAS</strong><hr style="width:40%;float:right" />
+        </div>
+
+        <div class="row" id="vegPizzas">
+
+
+        </div>
+
+    </div>
+
+    <div class="col-8">
+        <div class="text-center my-4">
+            <hr style="width:40%;float:left" /><strong style="color:red">NON-VEG PIZZAS</strong><hr style="width:40%;float:right" />
+        </div>
+
+        <div class="row" id="nonVegPizzas">
+
+
+        </div>
+
+    </div>
+
+    <div class="col-8">
+        <div class="text-center my-4">
+            <hr style="width:40%;float:left" /><strong style="color:blue">PIZZA MANIA</strong><hr style="width:40%;float:right" />
+        </div>
+
+        <div class="row" id="pizzaMania">
+
+
+        </div>
+
+    </div>
+</div>
+
+@section scripts
+    {
+    <script>
+        let JSONcart = {};
+        let prevData = JSON.parse(localStorage.getItem("cart"));
+        if (!$.isEmptyObject(prevData))
+            JSONcart = prevData;
+        $(document).ready(function () {
+            $.getJSON("https://localhost:44309/api/pizza/getpizzas", function (data) {
+                console.log(data);
+                let card;
+                for (let i in data) {
+                    card = `<div class="card col-lg-3 col-md-6 p-0 mx-lg-4 mx-sm-auto mx-md-auto my-3" id ="card-${data[i].MenuId}">
+                        <img src="${data[i].ImageSrc}" class="card-img-top" alt="...">
+                        <span class="price">₹${data[i].Prices[0].PriceOfProduct}</span>
+                        <div class="card-body p-2">
+                            <h6 class="mt-n4 pizzaName">${data[i].MenuName}</h6>
+                            <p class="card-text"> ${data[i].Description}</p>
+                            <hr />
+                                <div class="mb-2 text-center">
+                                    <small class="card-text">Size</small>
+                                    <select>`;
+                    for (let j in data[i].Prices) {
+                        card += `<option price="${data[i].Prices[j].PriceOfProduct}" size="${data[i].Prices[j].Size}" 
+                                value="${data[i].Prices[j].ProductId}">
+                                ${data[i].Prices[j].Size} ₹${data[i].Prices[j].PriceOfProduct}</option>`;
+                    }
+                        card+=      `</select>
+                                    <button type="button" class="btn btn-outline-success btn-sm addToCart mt-2"
+                                    productid="${data[i].Prices[0].ProductId}" pizzaName="${data[i].MenuName}" 
+                                    price="${data[i].Prices[0].PriceOfProduct}" size="${data[i].Prices[0].Size}"
+                                    menuid="${data[i].MenuId}"  imgsrc="${data[i].ImageSrc}">ADD TO CART</button>
+                                </div>
+                        </div>
+                    </div>`;
+                    console.log(data[i].Prices.length);
+                    if (data[i].Prices.length == 1)
+                        $('#pizzaMania').append(card);
+                    else if(data[i].Category == "Veg")
+                        $("#vegPizzas").append(card);
+                    else
+                        $("#nonVegPizzas").append(card);
+                }
+                addToCartEvent();
+                changeSizeEvent();
+                displayCart();
+            });
+
+
+        });
+
+        function addToCartEvent(data) {
+            $(".addToCart").click(function () {
+                let menuid = $(this).attr("menuid");
+                let productid = $(this).attr("productid");
+                let name = $(this).attr("pizzaname");
+                let price = $(this).attr("price");
+                let size = $(this).attr("size");
+                let img = $(this).attr("imgsrc");
+
+                if (JSONcart[productid] == undefined) {
+                    console.log("new product");
+                    JSONcart[productid]={
+                    "MenuId": menuid,
+                    "ProductId": productid,
+                    "Name": name,
+                    "Price": price,
+                    "Size": size,
+                    "Quantity":1,
+                    "Username":"@User.Identity.Name",
+                    "ImageSrc":img
+                };
+                }
+                else {
+                    console.log("old product");
+                    JSONcart[productid]={
+                    ...JSONcart[productid],
+                    "Price": parseInt(JSONcart[productid].Price) +parseInt(price),
+                    "Quantity": JSONcart[productid].Quantity + 1
+                };
+                }
+                localStorage.setItem("cart", JSON.stringify(JSONcart));
+                console.log(JSONcart);
+                //console.log(menuid + " | " + productid + " | " + name + " | " + price + " | " + size);
+                displayCart();
+            });
+        }
+
+        function changeSizeEvent() {
+            $("select").change(function () {
+                let selectedPrice = $(this).find(':selected').attr('price');
+                let selectedItem = $(this).find(':selected').attr('value');
+                let selectedSize = $(this).find(':selected').attr('size');
+
+                $(this).closest('div').children("button").attr("productid", selectedItem);
+                $(this).closest('div').children("button").attr("size", selectedSize);
+                $(this).closest('div').children("button").attr("price", selectedPrice);
+
+                selectedPrice = "₹" + selectedPrice;
+                $(this).closest('.card').children(".price")[0].innerHTML = selectedPrice;
+            });
+        }
+
+        function displayCart() {
+            if ($.isEmptyObject(JSONcart)) {
+                $("#emptyCart").show();
+                $("#loadedCart").remove();
+                return;
+            }
+            $("#emptyCart").hide();
+            $("#loadedCart").remove();
+            //$('#cart').find(".card").empty();
+            let content = `<div  id="loadedCart"><div class ="card-body pb-0">`;
+            let subTotal = 0;
+            for (let element in JSONcart) {
+                subTotal += parseInt(JSONcart[element].Price);
+                content += `<div class="row"><div class="col-3 px-0 pt-2"><img src="${JSONcart[element].ImageSrc}"></div><div class="col-9"><h6>${JSONcart[element].Name}</h6><p class="mb-2">${JSONcart[element].Size}
+                            ₹${JSONcart[element].Price}</p>
+                            <div>Quantity<button class="btn btn-danger btn-sm mx-2 remove" id="${JSONcart[element].ProductId}"><i class="fas fa-trash-alt"></i></button>
+                             ${JSONcart[element].Quantity}
+                            <button class="btn btn-success btn-sm mx-2 increase" id="${JSONcart[element].ProductId}"><i class="fas fa-plus"></i></button>
+                            </div></div></div><hr/>`;
+            }
+            content += `</div><div><h4 class="px-2 m-0">Subtotal<span class="float-right">₹${subTotal}</span></h4></div>
+                        <button class="btn btn-lg btn-success" id="checkoutBtn">Checkout</button></div>`
+            $('#cart').find('.card').append(content);
+            addIncreaseQuantityEvent();
+            addRemoveEvent();
+            addCheckoutEvent();
+        }
+
+        function addCheckoutEvent() {
+            $("#checkoutBtn").click(function () {
+                console.log(JSONcart);
+                console.log("Checkout button clicked");
+                location.href = "/home/checkout";
+                localStorage.setItem("cart", JSON.stringify(JSONcart));
+            });
+        }
+
+        function addIncreaseQuantityEvent() {
+            $(".increase").click(function () {
+                let productid = $(this).attr("id");
+                    JSONcart[productid].Price = parseInt(JSONcart[productid].Price) + parseInt(JSONcart[productid].Price)/parseInt(JSONcart[productid].Quantity);
+                    JSONcart[productid].Quantity = JSONcart[productid].Quantity + 1;
+                localStorage.setItem("cart", JSON.stringify(JSONcart));
+                displayCart();
+            });
+        }
+
+        function addRemoveEvent() {
+            $('.remove').click(function () {
+                let productid = $(this).attr("id");
+                if (JSONcart[productid].Quantity > 1) {
+                    JSONcart[productid].Price = JSONcart[productid].Price - JSONcart[productid].Price/JSONcart[productid].Quantity;
+                    JSONcart[productid].Quantity = JSONcart[productid].Quantity - 1;
+                }
+                else {
+                    delete JSONcart[$(this).attr("id")];
+                }
+                localStorage.setItem("cart", JSON.stringify(JSONcart));
+                displayCart();
+            });
+        }
+    </script>
+}
+
+
+

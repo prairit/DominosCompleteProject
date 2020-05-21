@@ -1,0 +1,32 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.0.0/animate.min.css" />
+    <link rel="stylesheet" href="~/css/OrderCompletion.css">
+    <link rel="icon" href="~/Images/TabLogo.png">
+    <title>Domino&#x27;s ZERO Contact Delivery - Great Taste, Delivered Safe</title>
+    <script src="https://kit.fontawesome.com/e0386161f3.js" crossorigin="anonymous"></script>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+</head>
+<body class="bg-success text-white">
+    <div class="container text-center">
+        <div class="centered">
+            <i class="fas fa-clipboard-check fa-7x"></i>
+            <h3 class="mt-4">Your order has been successfully placed!</h3>
+            <h3 class="mt-4"><a href="/home/pizzamenu">Place another order?</a></h3>
+        </div>
+    </div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+</body>
+</html>

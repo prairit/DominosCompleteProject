@@ -1,0 +1,82 @@
+﻿body {
+    background-color: #f2f2f2;
+    overflow-x: hidden;
+}
+
+#billAmount{
+    background-color:white;
+}
+
+a {
+    color: #0066a7;
+    font-weight:700;
+    font-size:15px;
+}
+
+a:hover {
+    text-decoration:none;
+}
+
+ul {
+    line-height: 230%;
+    list-style-type: none;
+    font-weight: 600;
+    padding-left: 20px;
+}
+
+#placeOrder {
+    background-color: #65ab0b;
+    color: white;
+    width: 100%;
+}
+
+#exploreMenu {
+    background-color: #65ab0b;
+    color: white;
+}
+
+#Cart {
+    color: #888091;
+    background-color: white;
+    margin: 50px 0px 50px 0px;
+}
+
+#emptyCartData {
+    padding: 50px 10px 50px 10px;
+}
+
+#Cart h4 {
+    font-weight: 700;
+    font-size: 21px;
+    margin-top: 10px;
+}
+
+    #Cart p{
+        font-size:15px;
+    }
+
+.fa-plus-square:hover {
+    color: darkgreen;
+    cursor: pointer;
+}
+
+.fa-minus-square:hover {
+    color: maroon;
+    cursor: pointer;
+}
+
+.Quantity{
+    position:relative;
+    left:-30px;
+}
+
+#mainBody{
+    min-height:385px;
+}
+
+#cartData img{
+    width:80%;
+    height:80px;
+}
+
+

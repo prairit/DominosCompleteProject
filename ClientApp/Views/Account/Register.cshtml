@@ -1,0 +1,65 @@
+﻿
+@model ClientApp.ViewModel.UserViewModel
+@{
+    ViewBag.Title = "Register";
+    Layout = null;
+}
+    <html>
+    <head>
+        @Styles.Render("~/Content/css")
+        <style>
+            .card-body {
+                border: groove #007bff 2px;
+                border-radius: 15px;
+                margin-top: 20px;
+            }
+            .card {
+                border: none !important;
+            }
+            body{
+                background-image:url("/Images/DominosBG.jpg");
+                background-size:contain;
+            }
+            .heading{
+                background-color:#f51329;
+            }
+        </style>
+    </head>
+        <body>
+            @using (Html.BeginForm())
+            {
+                <div class="text-white p-2 heading">
+                     <h3 class="text-center">New User Registration</h3>
+                </div>
+                @Html.AntiForgeryToken()
+                <div class="card col-4 offset-4 bg-transparent">                    
+                    <div class="card-body text-center bg-light">
+                        <p>@Html.ValidationSummary(false)</p>
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.UserName)
+                            @Html.TextBoxFor(m => m.UserName, new { @class = "form-control mx-auto" })
+                            @Html.ValidationMessageFor(m => m.UserName)
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.Password)
+                            @Html.PasswordFor(m => m.Password, new { @class = "form-control mx-auto" })
+                            @Html.ValidationMessageFor(m => m.Password)
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary rounded-0">Register</button>
+                            @Html.ActionLink("Login here", "Login")
+                        </div>
+
+                    </div>
+                </div>
+            }
+        </body>
+    </html>
+
+
+
+
+@section scripts
+{
+    @Scripts.Render("~/bundles/jqueryval")
+}

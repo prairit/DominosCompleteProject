@@ -12,6 +12,7 @@
           <Property Name="ItemId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="OrderId" Type="int" Nullable="false" />
           <Property Name="MenuId" Type="int" Nullable="false" />
+          <Property Name="Quantity" Type="int" />
         </EntityType>
         <EntityType Name="Menu">
           <Key>
@@ -20,15 +21,17 @@
           <Property Name="MenuId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="MenuName" Type="nvarchar" MaxLength="127" />
           <Property Name="Category" Type="nvarchar" MaxLength="127" />
+          <Property Name="ImageSrc" Type="nvarchar" MaxLength="127" />
+          <Property Name="Description" Type="nvarchar" MaxLength="127" />
         </EntityType>
         <EntityType Name="Order">
           <Key>
             <PropertyRef Name="OrderId" />
           </Key>
           <Property Name="OrderId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="OrderTime" Type="timestamp" StoreGeneratedPattern="Computed" Nullable="false" />
+          <Property Name="OrderTime" Type="datetime" StoreGeneratedPattern="Computed" />
           <Property Name="OrderedBy" Type="nvarchar" MaxLength="127" />
-          <Property Name="OrderAmount" Type="int" Nullable="false" />
+          <Property Name="OrderAmount" Type="float" Nullable="false" />
         </EntityType>
         <EntityType Name="Price">
           <Key>
@@ -46,30 +49,6 @@
           <Property Name="UserName" Type="nvarchar" MaxLength="127" Nullable="false" />
           <Property Name="Password" Type="nvarchar" MaxLength="127" Nullable="false" />
         </EntityType>
-        <Association Name="FK__ItemOrder__MenuI__36B12243">
-          <End Role="Menu" Type="Self.Menu" Multiplicity="1" />
-          <End Role="ItemOrdered" Type="Self.ItemOrdered" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Menu">
-              <PropertyRef Name="MenuId" />
-            </Principal>
-            <Dependent Role="ItemOrdered">
-              <PropertyRef Name="MenuId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK__ItemOrder__Order__35BCFE0A">
-          <End Role="Order" Type="Self.Order" Multiplicity="1" />
-          <End Role="ItemOrdered" Type="Self.ItemOrdered" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Order">
-              <PropertyRef Name="OrderId" />
-            </Principal>
-            <Dependent Role="ItemOrdered">
-              <PropertyRef Name="OrderId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK__Order__OrderedBy__2E1BDC42">
           <End Role="User" Type="Self.User" Multiplicity="0..1" />
           <End Role="Order" Type="Self.Order" Multiplicity="*" />
@@ -100,14 +79,6 @@
           <EntitySet Name="Order" EntityType="Self.Order" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Price" EntityType="Self.Price" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
-          <AssociationSet Name="FK__ItemOrder__MenuI__36B12243" Association="Self.FK__ItemOrder__MenuI__36B12243">
-            <End Role="Menu" EntitySet="Menu" />
-            <End Role="ItemOrdered" EntitySet="ItemOrdered" />
-          </AssociationSet>
-          <AssociationSet Name="FK__ItemOrder__Order__35BCFE0A" Association="Self.FK__ItemOrder__Order__35BCFE0A">
-            <End Role="Order" EntitySet="Order" />
-            <End Role="ItemOrdered" EntitySet="ItemOrdered" />
-          </AssociationSet>
           <AssociationSet Name="FK__Order__OrderedBy__2E1BDC42" Association="Self.FK__Order__OrderedBy__2E1BDC42">
             <End Role="User" EntitySet="User" />
             <End Role="Order" EntitySet="Order" />
@@ -130,6 +101,7 @@
           <Property Name="MenuId" Type="Int32" Nullable="false" />
           <NavigationProperty Name="Menu" Relationship="Self.FK__ItemOrder__MenuI__36B12243" FromRole="ItemOrdered" ToRole="Menu" />
           <NavigationProperty Name="Order" Relationship="Self.FK__ItemOrder__Order__35BCFE0A" FromRole="ItemOrdered" ToRole="Order" />
+          <Property Name="Quantity" Type="Int32" />
         </EntityType>
         <EntityType Name="Menu">
           <Key>
@@ -140,15 +112,17 @@
           <Property Name="Category" Type="String" MaxLength="127" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="ItemOrdereds" Relationship="Self.FK__ItemOrder__MenuI__36B12243" FromRole="Menu" ToRole="ItemOrdered" />
           <NavigationProperty Name="Prices" Relationship="Self.FK__Price__MenuId__2B3F6F97" FromRole="Menu" ToRole="Price" />
+          <Property Name="ImageSrc" Type="String" MaxLength="127" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" MaxLength="127" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="Order">
           <Key>
             <PropertyRef Name="OrderId" />
           </Key>
           <Property Name="OrderId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="OrderTime" Type="Binary" MaxLength="8" FixedLength="true" Nullable="false" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="OrderTime" Type="DateTime" annotation:StoreGeneratedPattern="Computed" Precision="3" />
           <Property Name="OrderedBy" Type="String" MaxLength="127" FixedLength="false" Unicode="true" />
-          <Property Name="OrderAmount" Type="Int32" Nullable="false" />
+          <Property Name="OrderAmount" Type="Double" Nullable="false" />
           <NavigationProperty Name="ItemOrdereds" Relationship="Self.FK__ItemOrder__Order__35BCFE0A" FromRole="Order" ToRole="ItemOrdered" />
           <NavigationProperty Name="User" Relationship="Self.FK__Order__OrderedBy__2E1BDC42" FromRole="Order" ToRole="User" />
         </EntityType>
@@ -249,6 +223,7 @@
           <EntitySetMapping Name="ItemOrdereds">
             <EntityTypeMapping TypeName="DominosModel.ItemOrdered">
               <MappingFragment StoreEntitySet="ItemOrdered">
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
                 <ScalarProperty Name="ItemId" ColumnName="ItemId" />
                 <ScalarProperty Name="OrderId" ColumnName="OrderId" />
                 <ScalarProperty Name="MenuId" ColumnName="MenuId" />
@@ -258,6 +233,8 @@
           <EntitySetMapping Name="Menus">
             <EntityTypeMapping TypeName="DominosModel.Menu">
               <MappingFragment StoreEntitySet="Menu">
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="ImageSrc" ColumnName="ImageSrc" />
                 <ScalarProperty Name="MenuId" ColumnName="MenuId" />
                 <ScalarProperty Name="MenuName" ColumnName="MenuName" />
                 <ScalarProperty Name="Category" ColumnName="Category" />

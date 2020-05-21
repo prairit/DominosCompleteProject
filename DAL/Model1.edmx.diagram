@@ -5,10 +5,10 @@
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
       <Diagram DiagramId="d0fa7943236c40c893ef03436cb4cb99" Name="Diagram1">
-        <EntityTypeShape EntityType="DominosModel.ItemOrdered" Width="1.5" PointX="5.25" PointY="1" IsExpanded="true" />
-        <EntityTypeShape EntityType="DominosModel.Menu" Width="1.5" PointX="8.5" PointY="0.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="DominosModel.ItemOrdered" Width="1.5" PointX="5.125" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DominosModel.Menu" Width="1.5" PointX="7.625" PointY="0.625" IsExpanded="true" />
         <EntityTypeShape EntityType="DominosModel.Order" Width="1.5" PointX="3" PointY="0.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="DominosModel.Price" Width="1.5" PointX="6.875" PointY="2.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="DominosModel.Price" Width="1.5" PointX="6.125" PointY="3.875" IsExpanded="true" />
         <EntityTypeShape EntityType="DominosModel.User" Width="1.5" PointX="0.75" PointY="1.25" IsExpanded="true" />
         <AssociationConnector Association="DominosModel.FK__ItemOrder__MenuI__36B12243" ManuallyRouted="false" />
         <AssociationConnector Association="DominosModel.FK__ItemOrder__Order__35BCFE0A" ManuallyRouted="false" />

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Data.Entity;
-
+using DTO;
 namespace DAL
 {
     public class PizzaDAL
@@ -16,8 +16,20 @@ namespace DAL
         }
         public List<Menu> GetAllPizzas ()
         {
-            var pizza = context.Menus.Include(m => m.Prices).ToList();
-            return pizza;
+            var pizzaList = context.Menus.Include(m => m.Prices).ToList();
+            return pizzaList;
+        }
+
+        public void CreateOrder(Order orderObj,List<ItemOrdered> itemOrderedObj)
+        {
+            var returnedObj = context.Orders.Add(orderObj);
+            context.SaveChanges();
+            foreach(var item in itemOrderedObj)
+            {
+                item.OrderId = returnedObj.OrderId;
+                context.ItemOrdereds.Add(item);
+            }
+            context.SaveChanges();
         }
     }
 }

@@ -21,9 +21,9 @@ namespace DAL
         }
     
         public int OrderId { get; set; }
-        public byte[] OrderTime { get; set; }
+        public Nullable<System.DateTime> OrderTime { get; set; }
         public string OrderedBy { get; set; }
-        public int OrderAmount { get; set; }
+        public double OrderAmount { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ItemOrdered> ItemOrdereds { get; set; }

@@ -1,0 +1,31 @@
+﻿body {
+}
+
+.centered {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+a{
+    color:white !important;
+}
+
+.fa-clipboard-check {
+    animation: tada;
+    animation-duration: 2s;
+    animation-delay: 0.5s;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+}
+
+@keyframes example {
+    from {
+        color:white !important;
+    }
+
+    to {
+        color:cornflowerblue !important;
+    }
+}

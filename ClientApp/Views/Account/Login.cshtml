@@ -1,0 +1,65 @@
+﻿@model ClientApp.ViewModel.UserViewModel
+@{
+    ViewBag.Title = "Login";
+    Layout = "";
+}
+    <html>
+    <head>
+        @Styles.Render("~/Content/css")
+        <style>
+            .card-body {
+                border: groove #007bff 2px;
+                border-radius:15px;
+                margin-top:20px;
+            }
+            .card {
+                border: none !important;
+            }
+            body{
+                background-image:url("/Images/DominosBG.jpg");
+                background-size:contain;
+            }
+            .heading{
+                background-color:#27a8e2;
+            }
+        </style>
+    </head>
+        <body>
+            <div>
+                @using (Html.BeginForm())
+                {
+                    <div class="text-white py-2 heading">
+                        <h3 class="text-center">User Login</h3>
+                    </div>
+                    @Html.AntiForgeryToken()
+                    <div class="card col-4 offset-4 text-center bg-transparent">
+                        
+                        <div class="card-body bg-light">
+                            <span>@Html.ValidationSummary(false)</span>
+                            <div class="form-group">
+                                @Html.LabelFor(m => m.UserName)
+                                @Html.TextBoxFor(m => m.UserName, new { @class = "form-control mx-auto" })
+                                @Html.ValidationMessageFor(m => m.UserName)
+                            </div>
+                            <div class="form-group">
+                                @Html.LabelFor(m => m.Password)
+                                @Html.PasswordFor(m => m.Password, new { @class = "form-control mx-auto" })
+                                @Html.ValidationMessageFor(m => m.Password)
+                            </div>
+                            <div class="form-group">
+                                <input type="submit" value="Login" class="btn btn-info rounded-0" formaction="/Account/Login" formmethod="Post" />
+                                <input type="submit" value="Register" class="btn btn-success rounded-0" formaction="/Account/Register" formmethod="Post" />
+                            </div>
+
+                        </div>
+                    </div>
+                }
+            </div>
+        </body>
+    </html>
+
+
+@section scripts
+{
+    @Scripts.Render("~/bundles/jqueryval")
+}
