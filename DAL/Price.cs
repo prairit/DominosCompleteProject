@@ -14,9 +14,18 @@ namespace DAL
     
     public partial class Price
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public Price()
+        {
+            this.Carts = new HashSet<Cart>();
+        }
+    
         public int ProductId { get; set; }
         public int MenuId { get; set; }
         public string Size { get; set; }
         public int PriceOfProduct { get; set; }
+    
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Cart> Carts { get; set; }
     }
 }

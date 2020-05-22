@@ -31,5 +31,67 @@ namespace DAL
             }
             context.SaveChanges();
         }
+
+        public void AddPizzaToCart(Cart CartObj)
+        {
+            var returnedObj = context.Carts.FirstOrDefault(t => t.OrderedBy == CartObj.OrderedBy && t.ProductId == CartObj.ProductId);
+            if(returnedObj==null)
+            {
+                CartObj.Quantity = 1;
+                context.Carts.Add(CartObj);
+            }
+            else
+            {
+                returnedObj.Quantity ++;
+            }
+            context.SaveChanges();
+        }
+
+        public void DeletePizzaFromCart(Cart CartObj)
+        {
+            var returnedObj = context.Carts.FirstOrDefault(t => t.OrderedBy == CartObj.OrderedBy && t.ProductId == CartObj.ProductId);
+            if (returnedObj.Quantity<=1)
+            {
+                context.Carts.Remove(returnedObj);
+            }
+            else
+            {
+                returnedObj.Quantity--;
+            }
+            context.SaveChanges();
+        }
+
+        public List<Cart> GetCart (String Username)
+        {
+            var CartList = context.Carts.Where(t => t.OrderedBy == Username).ToList();
+            return CartList;
+        }
+
+        public void CompleteOrder (String Username)
+        {
+            var CartList = context.Carts.Where(t => t.OrderedBy == Username).ToList();
+            var OrderObj = new Order
+            {
+                OrderTime = DateTime.Now,
+                OrderedBy = Username,
+                OrderAmount = 100
+            };
+            context.Orders.Add(OrderObj);
+            context.SaveChanges();
+            var ItemList = new List<ItemOrdered>();
+            foreach (var item in CartList)
+            {
+                var itemOrdered = new ItemOrdered
+                {
+                    OrderId = OrderObj.OrderId,
+                    MenuId = item.MenuId,
+                    Quantity = item.Quantity
+                };
+                ItemList.Add(itemOrdered);
+            }
+            context.ItemOrdereds.AddRange(ItemList);
+            context.Carts.RemoveRange(CartList);
+            context.SaveChanges();
+        }
     }
 }

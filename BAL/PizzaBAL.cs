@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DAL;
-using DAL.Models;
 using DTO;
 using BAL.Mapper;
 
@@ -47,6 +46,34 @@ namespace BAL
                 OrderAmount=(totalAmount*1.05d)
             };
             pizzaDAL.CreateOrder(orderObj, ListitemOrdered);
+        }
+
+        public void PostPizza (CartSingleItemDto cartItemDto)
+        {
+            var CartObj = mapper.ToCartObjMapper(cartItemDto);
+            pizzaDAL.AddPizzaToCart(CartObj);
+        }
+
+        public void DeletePizza(CartSingleItemDto cartItemDto)
+        {
+            var CartObj = mapper.ToCartObjMapper(cartItemDto);
+            pizzaDAL.DeletePizzaFromCart(CartObj);
+        }
+
+        public List<MultipleItemCartDto> GetCart(String Username)
+        {
+            var CartList = pizzaDAL.GetCart(Username);
+            var CartDtoList = new List<MultipleItemCartDto>();
+            foreach(var item in CartList)
+            {
+                CartDtoList.Add( mapper.ToCartDtoMapper(item));
+            }
+            return CartDtoList;
+        }
+
+        public void CompleteOrder(String Username)
+        {
+            pizzaDAL.CompleteOrder(Username);
         }
     }
 }

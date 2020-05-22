@@ -139,6 +139,17 @@
         }
 
         function postCart() {
+            $.ajax({
+                    url: 'https://localhost:44309/api/Pizza/CompleteOrder/@User.Identity.Name',
+                    method: 'Post',
+                    contentType: "application/json; charset=utf-8",
+                    success: function (data) {
+                        console.log(data);
+                    },
+                    error: function (err) {
+                        console.log(err);
+                    }
+                    });
             let arrCart = [];
             for (let element in JSONcart) {
                 arrCart.push(

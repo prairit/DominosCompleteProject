@@ -14,6 +14,10 @@
         <AssociationConnector Association="DominosModel.FK__ItemOrder__Order__35BCFE0A" ManuallyRouted="false" />
         <AssociationConnector Association="DominosModel.FK__Price__MenuId__2B3F6F97" ManuallyRouted="false" />
         <AssociationConnector Association="DominosModel.FK__Order__OrderedBy__2E1BDC42" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="DominosModel.Cart" Width="1.5" PointX="10.5" PointY="1.375" />
+        <AssociationConnector Association="DominosModel.FK__Cart__MenuId__2EDAF651" />
+        <AssociationConnector Association="DominosModel.FK__Cart__OrderedBy__2FCF1A8A" />
+        <AssociationConnector Association="DominosModel.FK__Cart__ProductId__32AB8735" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

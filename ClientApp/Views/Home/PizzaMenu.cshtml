@@ -150,7 +150,25 @@
                 }
                 localStorage.setItem("cart", JSON.stringify(JSONcart));
                 console.log(JSONcart);
-                //console.log(menuid + " | " + productid + " | " + name + " | " + price + " | " + size);
+
+                $.ajax({
+                    url: 'https://localhost:44309/api/Pizza/PostPizza',
+                    method: 'Post',
+                    data: JSON.stringify({
+                        MenuId: menuid,
+                        ProductId: productid,
+                        OrderedBy:"@User.Identity.Name"
+
+                    }),
+                    contentType: "application/json; charset=utf-8",
+                    success: function (data) {
+                        console.log(data);
+                    },
+                    error: function (err) {
+                        console.log(err);
+                    }
+                    });
+
                 displayCart();
             });
         }
@@ -171,6 +189,7 @@
         }
 
         function displayCart() {
+            $.getJSON("https://localhost:44309/api/pizza/GetCart/@User.Identity.Name", function (data) {console.log(data) });
             if ($.isEmptyObject(JSONcart)) {
                 $("#emptyCart").show();
                 $("#loadedCart").remove();
@@ -214,12 +233,47 @@
                     JSONcart[productid].Quantity = JSONcart[productid].Quantity + 1;
                 localStorage.setItem("cart", JSON.stringify(JSONcart));
                 displayCart();
+                $.ajax({
+                    url: 'https://localhost:44309/api/Pizza/PostPizza',
+                    method: 'Post',
+                    data: JSON.stringify({
+                        MenuId: JSONcart[productid].MenuId,
+                        ProductId: productid,
+                        OrderedBy:"@User.Identity.Name"
+
+                    }),
+                    contentType: "application/json; charset=utf-8",
+                    success: function (data) {
+                        console.log(data);
+                    },
+                    error: function (err) {
+                        console.log(err);
+                    }
+                    });
             });
+            
         }
 
         function addRemoveEvent() {
             $('.remove').click(function () {
                 let productid = $(this).attr("id");
+                $.ajax({
+                    url: 'https://localhost:44309/api/Pizza/DeletePizza',
+                    method: 'Delete',
+                    data: JSON.stringify({
+                        MenuId: JSONcart[productid].MenuId,
+                        ProductId: productid,
+                        OrderedBy:"@User.Identity.Name"
+
+                    }),
+                    contentType: "application/json; charset=utf-8",
+                    success: function (data) {
+                        console.log(data);
+                    },
+                    error: function (err) {
+                        console.log(err);
+                    }
+                    });
                 if (JSONcart[productid].Quantity > 1) {
                     JSONcart[productid].Price = JSONcart[productid].Price - JSONcart[productid].Price/JSONcart[productid].Quantity;
                     JSONcart[productid].Quantity = JSONcart[productid].Quantity - 1;
