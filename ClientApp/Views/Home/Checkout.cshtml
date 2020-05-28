@@ -49,72 +49,86 @@
 
 @section scripts{
     <script>
-        let JSONcart = {};
-        let prevData = JSON.parse(localStorage.getItem("cart"));
-        if (!$.isEmptyObject(prevData))
-            JSONcart = prevData;
         $(document).ready(function () {
             displayCart();
             addPlaceOrderRequest();
         });
 
-        function displayCart(){
-            emptyContent();
-            if ($.isEmptyObject(JSONcart)) {
-                $("#emptyCartData").show();
-                $("#subTotal").append("₹"+0);
-                $("#gst").append("₹"+0);
-                $("#grandTotal").append("₹"+0);
-                $("#placeOrder").attr("disabled", "");
-                return;
-            }
-            $("#placeOrder").removeAttr("disabled");
-            let content = ``;
-            let subTotal = 0;
-            for (element in JSONcart) {
-                subTotal += parseInt(JSONcart[element].Price);
-                content += `<hr/><div class=row><div class="col-3"><img src="${JSONcart[element].ImageSrc}"></div><div class="col-9 ml-n4"><div class="float-right text-center"><h5>₹${JSONcart[element].Price}</h5>
-                <div class="Quantity">Quantity  <i class="fas fa-minus-square fa-lg" id="${JSONcart[element].ProductId}"></i>
-                ${JSONcart[element].Quantity}  <i class="fas fa-plus-square fa-lg" id="${JSONcart[element].ProductId}"></i></div></div>
-                <h5>${JSONcart[element].Name}</h5><p>${JSONcart[element].Size}</p></div></div><hr/>`;
-            }
-            $("#subTotal").append("₹"+subTotal);
-            $("#gst").append("₹"+(subTotal*0.05).toFixed(2));
-            $("#grandTotal").append("₹"+(subTotal+subTotal*0.05).toFixed(2));
-            $("#cartData").append(content);
-            addChangeQuantityEvent();
+        function displayCart() {
+            $.getJSON("https://localhost:44309/api/pizza/GetCart/@User.Identity.Name", function (cartData) {
+                emptyContent();
+                if ($.isEmptyObject(cartData)) {
+                    $("#emptyCartData").show();
+                    $("#subTotal").append("₹" + 0);
+                    $("#gst").append("₹" + 0);
+                    $("#grandTotal").append("₹" + 0);
+                    $("#placeOrder").attr("disabled", "");
+                    return;
+                }
+                $("#placeOrder").removeAttr("disabled");
+                let content = ``;
+                let subTotal = 0;
+                for (element in cartData) {
+                    subTotal += parseInt(cartData[element].Price.PriceOfProduct * cartData[element].Quantity);
+                    content += `<hr/><div class=row><div class="col-3"><img src="${cartData[element].Menu.ImageSrc}">
+                    </div><div class="col-9 ml-n4"><div class="float-right text-center"><h5>₹${cartData[element].Price.PriceOfProduct*cartData[element].Quantity}</h5>
+                    <div class="Quantity">Quantity  <i class="fas fa-minus-square fa-lg" productid="${cartData[element].ProductId}" menuid="${cartData[element].Menu.MenuId}"></i>
+                    ${cartData[element].Quantity}  <i class="fas fa-plus-square fa-lg" productid="${cartData[element].ProductId}" menuid="${cartData[element].Menu.MenuId}"></i></div></div>
+                    <h5>${cartData[element].Menu.MenuName}</h5><p>${cartData[element].Price.Size}</p></div></div><hr/>`;
+                }
+                $("#subTotal").append("₹" + subTotal);
+                $("#gst").append("₹" + (subTotal * 0.05).toFixed(2));
+                $("#grandTotal").append("₹" + (subTotal + subTotal * 0.05).toFixed(2));
+                $("#cartData").append(content);
+                addChangeQuantityEvent();
+            });
         }
 
         function addChangeQuantityEvent() {
             $(".fa-plus-square").click(function () {
-                console.log($(this).attr("id"));
-                let productid = $(this).attr("id");
-                JSONcart[productid]={
-                    ...JSONcart[productid],
-                    "Price": parseInt(JSONcart[productid].Price) +parseInt(JSONcart[productid].Price / JSONcart[productid].Quantity),
-                    "Quantity": JSONcart[productid].Quantity + 1
-                };
-                console.log(JSONcart);
-                localStorage.setItem("cart", JSON.stringify(JSONcart));
-                displayCart();
+                let productid = $(this).attr("productid");
+                let menuid = $(this).attr("menuid");
+                $.ajax({
+                    url: 'https://localhost:44309/api/Pizza/PostPizza',
+                    method: 'Post',
+                    data: JSON.stringify({
+                        MenuId: menuid,
+                        ProductId: productid,
+                        OrderedBy:"@User.Identity.Name"
+
+                    }),
+                    contentType: "application/json; charset=utf-8",
+                    success: function (data) {
+                        console.log(data);
+                        displayCart();
+                    },
+                    error: function (err) {
+                        console.log(err);
+                    }
+                });
             });
 
             $(".fa-minus-square").click(function () {
-                console.log($(this).attr("id"));
-                let productid = $(this).attr("id");
-                if (JSONcart[productid].Quantity > 1) {
-                    JSONcart[productid] = {
-                        ...JSONcart[productid],
-                        "Price": parseInt(JSONcart[productid].Price) - parseInt(JSONcart[productid].Price / JSONcart[productid].Quantity),
-                        "Quantity": JSONcart[productid].Quantity - 1
-                    };
-                }
-                else {
-                    delete JSONcart[productid];
-                }
-                console.log(JSONcart);
-                localStorage.setItem("cart", JSON.stringify(JSONcart));
-                displayCart();
+                let productid = $(this).attr("productid");
+                let menuid = $(this).attr("menuid");
+                $.ajax({
+                    url: 'https://localhost:44309/api/Pizza/DeletePizza',
+                    method: 'Delete',
+                    data: JSON.stringify({
+                        MenuId: menuid,
+                        ProductId: productid,
+                        OrderedBy:"@User.Identity.Name"
+
+                    }),
+                    contentType: "application/json; charset=utf-8",
+                    success: function (data) {
+                        console.log(data);
+                        displayCart();
+                    },
+                    error: function (err) {
+                        console.log(err);
+                    }
+                    });
             });
         }
 
@@ -128,13 +142,15 @@
 
         function addPlaceOrderRequest() {
             $("#placeOrder").click(function () {
-                if ($.isEmptyObject(JSONcart)) {
-                    $(this).attr("disabled", "true");
-                }
-                else {
-                    console.log("item cart");
-                    postCart();
-                }
+                $.getJSON("https://localhost:44309/api/pizza/GetCart/@User.Identity.Name", function (cartData) {
+                    if ($.isEmptyObject(cartData)) {
+                        $(this).attr("disabled", "true");
+                    }
+                    else {
+                        console.log("item cart");
+                        postCart();
+                    }
+                });
             });
         }
 
@@ -144,38 +160,12 @@
                     method: 'Post',
                     contentType: "application/json; charset=utf-8",
                     success: function (data) {
-                        console.log(data);
+                        location.href = "/home/OrderCompletion";
                     },
                     error: function (err) {
                         console.log(err);
                     }
                     });
-            let arrCart = [];
-            for (let element in JSONcart) {
-                arrCart.push(
-                    {
-                        "MenuId":parseInt(JSONcart[element].MenuId),
-                        "Name": JSONcart[element].Name,
-                        "Price":parseInt(JSONcart[element].Price),
-                        "Size": JSONcart[element].Size,
-                        "Quantity": parseInt(JSONcart[element].Quantity),
-                        "Username": JSONcart[element].Username
-
-                    });
-            }
-            console.log(arrCart);   
-             $.ajax({
-                url: 'https://localhost:44309/api/Pizza/',
-                method: 'Post',
-                data: JSON.stringify(arrCart),
-                contentType: "application/json; charset=utf-8",
-                success: function () {
-                    location.href = "/home/OrderCompletion";
-                },
-                error: function (err) {
-                    alert(err);
-                }
-            });
 
         }
     </script>

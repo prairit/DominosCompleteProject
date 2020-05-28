@@ -16,82 +16,105 @@ namespace DAL
         }
         public List<Menu> GetAllPizzas ()
         {
-            var pizzaList = context.Menus.Include(m => m.Prices).ToList();
-            return pizzaList;
-        }
-
-        public void CreateOrder(Order orderObj,List<ItemOrdered> itemOrderedObj)
-        {
-            var returnedObj = context.Orders.Add(orderObj);
-            context.SaveChanges();
-            foreach(var item in itemOrderedObj)
+            try
             {
-                item.OrderId = returnedObj.OrderId;
-                context.ItemOrdereds.Add(item);
+                var pizzaList = context.Menus.Include(m => m.Prices).ToList();
+                return pizzaList;
             }
-            context.SaveChanges();
+            catch
+            {
+                return new List<Menu>();
+            }
         }
 
         public void AddPizzaToCart(Cart CartObj)
         {
-            var returnedObj = context.Carts.FirstOrDefault(t => t.OrderedBy == CartObj.OrderedBy && t.ProductId == CartObj.ProductId);
-            if(returnedObj==null)
+            try
             {
-                CartObj.Quantity = 1;
-                context.Carts.Add(CartObj);
+                var returnedObj = context.Carts.FirstOrDefault(t => t.OrderedBy == CartObj.OrderedBy && t.ProductId == CartObj.ProductId);
+                if (returnedObj == null)
+                {
+                    CartObj.Quantity = 1;
+                    context.Carts.Add(CartObj);
+                }
+                else
+                {
+                    returnedObj.Quantity++;
+                }
+                context.SaveChanges();
             }
-            else
+            catch
             {
-                returnedObj.Quantity ++;
+                return;
             }
-            context.SaveChanges();
         }
 
         public void DeletePizzaFromCart(Cart CartObj)
         {
-            var returnedObj = context.Carts.FirstOrDefault(t => t.OrderedBy == CartObj.OrderedBy && t.ProductId == CartObj.ProductId);
-            if (returnedObj.Quantity<=1)
+            try
             {
-                context.Carts.Remove(returnedObj);
+                var returnedObj = context.Carts.FirstOrDefault(t => t.OrderedBy == CartObj.OrderedBy && t.ProductId == CartObj.ProductId);
+                if (returnedObj.Quantity <= 1)
+                {
+                    context.Carts.Remove(returnedObj);
+                }
+                else
+                {
+                    returnedObj.Quantity--;
+                }
+                context.SaveChanges();
             }
-            else
+            catch
             {
-                returnedObj.Quantity--;
+                return;
             }
-            context.SaveChanges();
         }
 
         public List<Cart> GetCart (String Username)
         {
-            var CartList = context.Carts.Where(t => t.OrderedBy == Username).ToList();
-            return CartList;
+            try
+            {
+
+                var CartList = context.Carts.Where(t => t.OrderedBy == Username).ToList();
+                return CartList;
+            }
+            catch
+            {
+                return new List<Cart>();
+            }
         }
 
         public void CompleteOrder (String Username)
         {
-            var CartList = context.Carts.Where(t => t.OrderedBy == Username).ToList();
-            var OrderObj = new Order
+            try
             {
-                OrderTime = DateTime.Now,
-                OrderedBy = Username,
-                OrderAmount = 100
-            };
-            context.Orders.Add(OrderObj);
-            context.SaveChanges();
-            var ItemList = new List<ItemOrdered>();
-            foreach (var item in CartList)
-            {
-                var itemOrdered = new ItemOrdered
+                var CartList = context.Carts.Where(t => t.OrderedBy == Username).ToList();
+                var OrderObj = new Order
                 {
-                    OrderId = OrderObj.OrderId,
-                    MenuId = item.MenuId,
-                    Quantity = item.Quantity
+                    OrderTime = DateTime.Now,
+                    OrderedBy = Username
                 };
-                ItemList.Add(itemOrdered);
+                context.Orders.Add(OrderObj);
+                context.SaveChanges();
+                var ItemList = new List<ItemOrdered>();
+                foreach (var item in CartList)
+                {
+                    var itemOrdered = new ItemOrdered
+                    {
+                        OrderId = OrderObj.OrderId,
+                        MenuId = item.MenuId,
+                        Quantity = item.Quantity
+                    };
+                    ItemList.Add(itemOrdered);
+                }
+                context.ItemOrdereds.AddRange(ItemList);
+                context.Carts.RemoveRange(CartList);
+                context.SaveChanges();
             }
-            context.ItemOrdereds.AddRange(ItemList);
-            context.Carts.RemoveRange(CartList);
-            context.SaveChanges();
+            catch
+            {
+                return;
+            }
         }
     }
 }

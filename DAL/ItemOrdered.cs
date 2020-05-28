@@ -20,6 +20,5 @@ namespace DAL
         public Nullable<int> Quantity { get; set; }
     
         public virtual Menu Menu { get; set; }
-        public virtual Order Order { get; set; }
     }
 }

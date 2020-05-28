@@ -30,24 +30,6 @@ namespace BAL
             return ListMenuDto;
         }
 
-        public void CreateOrder(List<CartItemDto> Cart)
-        {
-            double totalAmount = new double();
-            List<ItemOrdered> ListitemOrdered = new List<ItemOrdered>();
-            foreach(var item in Cart)
-            {
-                totalAmount += item.Price;
-                ListitemOrdered.Add(new ItemOrdered { MenuId = item.MenuId, Quantity = item.Quantity});
-            }
-            var orderObj = new Order
-            {
-                OrderTime = DateTime.Now,
-                OrderedBy=Cart[0].Username,
-                OrderAmount=(totalAmount*1.05d)
-            };
-            pizzaDAL.CreateOrder(orderObj, ListitemOrdered);
-        }
-
         public void PostPizza (CartSingleItemDto cartItemDto)
         {
             var CartObj = mapper.ToCartObjMapper(cartItemDto);

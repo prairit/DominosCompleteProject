@@ -70,10 +70,6 @@
 @section scripts
     {
     <script>
-        let JSONcart = {};
-        let prevData = JSON.parse(localStorage.getItem("cart"));
-        if (!$.isEmptyObject(prevData))
-            JSONcart = prevData;
         $(document).ready(function () {
             $.getJSON("https://localhost:44309/api/pizza/getpizzas", function (data) {
                 console.log(data);
@@ -102,7 +98,6 @@
                                 </div>
                         </div>
                     </div>`;
-                    console.log(data[i].Prices.length);
                     if (data[i].Prices.length == 1)
                         $('#pizzaMania').append(card);
                     else if(data[i].Category == "Veg")
@@ -118,7 +113,7 @@
 
         });
 
-        function addToCartEvent(data) {
+        function addToCartEvent() {
             $(".addToCart").click(function () {
                 let menuid = $(this).attr("menuid");
                 let productid = $(this).attr("productid");
@@ -126,30 +121,6 @@
                 let price = $(this).attr("price");
                 let size = $(this).attr("size");
                 let img = $(this).attr("imgsrc");
-
-                if (JSONcart[productid] == undefined) {
-                    console.log("new product");
-                    JSONcart[productid]={
-                    "MenuId": menuid,
-                    "ProductId": productid,
-                    "Name": name,
-                    "Price": price,
-                    "Size": size,
-                    "Quantity":1,
-                    "Username":"@User.Identity.Name",
-                    "ImageSrc":img
-                };
-                }
-                else {
-                    console.log("old product");
-                    JSONcart[productid]={
-                    ...JSONcart[productid],
-                    "Price": parseInt(JSONcart[productid].Price) +parseInt(price),
-                    "Quantity": JSONcart[productid].Quantity + 1
-                };
-                }
-                localStorage.setItem("cart", JSON.stringify(JSONcart));
-                console.log(JSONcart);
 
                 $.ajax({
                     url: 'https://localhost:44309/api/Pizza/PostPizza',
@@ -163,13 +134,13 @@
                     contentType: "application/json; charset=utf-8",
                     success: function (data) {
                         console.log(data);
+                        displayCart();
                     },
                     error: function (err) {
                         console.log(err);
                     }
                     });
 
-                displayCart();
             });
         }
 
@@ -189,25 +160,25 @@
         }
 
         function displayCart() {
-            $.getJSON("https://localhost:44309/api/pizza/GetCart/@User.Identity.Name", function (data) {console.log(data) });
-            if ($.isEmptyObject(JSONcart)) {
+            $.getJSON("https://localhost:44309/api/pizza/GetCart/@User.Identity.Name", function (cartData) {
+                console.log(cartData);
+            if ($.isEmptyObject(cartData)) {
                 $("#emptyCart").show();
                 $("#loadedCart").remove();
                 return;
             }
             $("#emptyCart").hide();
             $("#loadedCart").remove();
-            //$('#cart').find(".card").empty();
             let content = `<div  id="loadedCart"><div class ="card-body pb-0">`;
             let subTotal = 0;
-            for (let element in JSONcart) {
-                subTotal += parseInt(JSONcart[element].Price);
-                content += `<div class="row"><div class="col-3 px-0 pt-2"><img src="${JSONcart[element].ImageSrc}"></div><div class="col-9"><h6>${JSONcart[element].Name}</h6><p class="mb-2">${JSONcart[element].Size}
-                            ₹${JSONcart[element].Price}</p>
-                            <div>Quantity<button class="btn btn-danger btn-sm mx-2 remove" id="${JSONcart[element].ProductId}"><i class="fas fa-trash-alt"></i></button>
-                             ${JSONcart[element].Quantity}
-                            <button class="btn btn-success btn-sm mx-2 increase" id="${JSONcart[element].ProductId}"><i class="fas fa-plus"></i></button>
-                            </div></div></div><hr/>`;
+            for (let element in cartData) {
+                subTotal += parseInt(cartData[element].Price.PriceOfProduct*cartData[element].Quantity);
+                content += `<div class="row"><div class="col-3 px-0 pt-2"><img src="${cartData[element].Menu.ImageSrc}"></div><div class="col-9"><h6>${cartData[element].Menu.MenuName}</h6><p class="mb-2">${cartData[element].Price.Size}
+                            ₹${cartData[element].Price.PriceOfProduct*cartData[element].Quantity}</p>
+                            <div>Quantity<button class="btn btn-danger btn-sm mx-2 remove" productid="${cartData[element].Price.ProductId}" menuid="${cartData[element].MenuId}">
+                            <i class="fas fa-trash-alt"></i></button>${cartData[element].Quantity}
+                            <button class="btn btn-success btn-sm mx-2 increase" productid="${cartData[element].Price.ProductId}" menuid="${cartData[element].MenuId}">
+                            <i class="fas fa-plus"></i></button></div></div></div><hr/>`;
             }
             content += `</div><div><h4 class="px-2 m-0">Subtotal<span class="float-right">₹${subTotal}</span></h4></div>
                         <button class="btn btn-lg btn-success" id="checkoutBtn">Checkout</button></div>`
@@ -215,29 +186,25 @@
             addIncreaseQuantityEvent();
             addRemoveEvent();
             addCheckoutEvent();
+            });
+            
         }
 
         function addCheckoutEvent() {
             $("#checkoutBtn").click(function () {
-                console.log(JSONcart);
-                console.log("Checkout button clicked");
                 location.href = "/home/checkout";
-                localStorage.setItem("cart", JSON.stringify(JSONcart));
             });
         }
 
         function addIncreaseQuantityEvent() {
             $(".increase").click(function () {
-                let productid = $(this).attr("id");
-                    JSONcart[productid].Price = parseInt(JSONcart[productid].Price) + parseInt(JSONcart[productid].Price)/parseInt(JSONcart[productid].Quantity);
-                    JSONcart[productid].Quantity = JSONcart[productid].Quantity + 1;
-                localStorage.setItem("cart", JSON.stringify(JSONcart));
-                displayCart();
+                let productid = $(this).attr("productid");
+                let menuid = $(this).attr("menuid");
                 $.ajax({
                     url: 'https://localhost:44309/api/Pizza/PostPizza',
                     method: 'Post',
                     data: JSON.stringify({
-                        MenuId: JSONcart[productid].MenuId,
+                        MenuId: menuid,
                         ProductId: productid,
                         OrderedBy:"@User.Identity.Name"
 
@@ -245,23 +212,25 @@
                     contentType: "application/json; charset=utf-8",
                     success: function (data) {
                         console.log(data);
+                        displayCart();
                     },
                     error: function (err) {
                         console.log(err);
                     }
-                    });
+                });
             });
             
         }
 
         function addRemoveEvent() {
             $('.remove').click(function () {
-                let productid = $(this).attr("id");
+                let productid = $(this).attr("productid");
+                let menuid = $(this).attr("menuid");
                 $.ajax({
                     url: 'https://localhost:44309/api/Pizza/DeletePizza',
                     method: 'Delete',
                     data: JSON.stringify({
-                        MenuId: JSONcart[productid].MenuId,
+                        MenuId: menuid,
                         ProductId: productid,
                         OrderedBy:"@User.Identity.Name"
 
@@ -269,20 +238,12 @@
                     contentType: "application/json; charset=utf-8",
                     success: function (data) {
                         console.log(data);
+                        displayCart();
                     },
                     error: function (err) {
                         console.log(err);
                     }
                     });
-                if (JSONcart[productid].Quantity > 1) {
-                    JSONcart[productid].Price = JSONcart[productid].Price - JSONcart[productid].Price/JSONcart[productid].Quantity;
-                    JSONcart[productid].Quantity = JSONcart[productid].Quantity - 1;
-                }
-                else {
-                    delete JSONcart[$(this).attr("id")];
-                }
-                localStorage.setItem("cart", JSON.stringify(JSONcart));
-                displayCart();
             });
         }
     </script>

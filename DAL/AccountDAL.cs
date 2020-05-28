@@ -16,16 +16,32 @@ namespace DAL
 
         public bool ValidateUser(User userObj)
         {
-            bool IsValidUser = context.Users
+            try
+            {
+                bool IsValidUser = context.Users
                .Any(u => u.UserName == userObj.UserName.ToLower() && u
                .Password == userObj.Password);
-            return IsValidUser;
+                return IsValidUser;
+            }
+            catch
+            {
+                return false;
+            }
+            
         }
 
         public void RegisterUser(User userObj)
         {
-            context.Users.Add(userObj);
-            context.SaveChanges();
+            try
+            {
+                context.Users.Add(userObj);
+                context.SaveChanges();
+            }
+            catch
+            {
+                return;
+            }
+            
         }
     }
 }
