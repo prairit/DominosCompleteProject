@@ -1,7 +1,7 @@
 ﻿using System.Web;
 using System.Web.Optimization;
 
-namespace ClientApp
+namespace DominosFrontEnd
 {
     public class BundleConfig
     {

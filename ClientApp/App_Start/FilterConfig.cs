@@ -1,7 +1,7 @@
 ﻿using System.Web;
 using System.Web.Mvc;
 
-namespace ClientApp
+namespace DominosFrontEnd
 {
     public class FilterConfig
     {

@@ -16,7 +16,7 @@ namespace DAL
     {
         public int ItemId { get; set; }
         public int OrderId { get; set; }
-        public int MenuId { get; set; }
+        public int ProductId { get; set; }
         public Nullable<int> Quantity { get; set; }
     
         public virtual Menu Menu { get; set; }

@@ -4,8 +4,11 @@ using System.Linq;
 using System.Web;
 using System.ComponentModel.DataAnnotations;
 
-namespace ClientApp.ViewModel
+namespace DominosFrontEnd.ViewModel
 {
+    /// <summary>
+    /// This class contains the properties for view model of the account login or registration page
+    /// </summary>
     public class UserViewModel
     {
         [Required(ErrorMessage = "Please enter username")]

@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace DAL
 {
+    /// <summary>
+    /// This is the DAL class which performs the Database operations for account authentication and registration
+    /// </summary>
     public class AccountDAL
     {
         DominosEntities context;
@@ -13,35 +16,26 @@ namespace DAL
         {
             context = new DominosEntities();
         }
-
+        /// <summary>
+        /// This method validates if the user is present in the database
+        /// </summary>
+        /// <param name="userObj">Object of user</param>
+        /// <returns>boolean value of failure or success</returns>
         public bool ValidateUser(User userObj)
         {
-            try
-            {
-                bool IsValidUser = context.Users
-               .Any(u => u.UserName == userObj.UserName.ToLower() && u
-               .Password == userObj.Password);
-                return IsValidUser;
-            }
-            catch
-            {
-                return false;
-            }
-            
+            bool IsValidUser = context.Users
+            .Any(u => u.UserName == userObj.UserName && 
+            u.Password == userObj.Password);
+            return IsValidUser;
         }
-
+        /// <summary>
+        /// This method registers a new user
+        /// </summary>
+        /// <param name="userObj">Object of user type that need to be registered</param>
         public void RegisterUser(User userObj)
         {
-            try
-            {
-                context.Users.Add(userObj);
-                context.SaveChanges();
-            }
-            catch
-            {
-                return;
-            }
-            
+            context.Users.Add(userObj);
+            context.SaveChanges();            
         }
     }
 }

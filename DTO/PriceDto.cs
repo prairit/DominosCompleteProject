@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace DTO
 {
+    /// <summary>
+    /// This class contains the properties of the price table which is never used stand-alone
+    /// </summary>
     public class PriceDto
     {
             public int ProductId { get; set; }

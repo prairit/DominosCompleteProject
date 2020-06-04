@@ -5,18 +5,19 @@
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
       <Diagram DiagramId="d0fa7943236c40c893ef03436cb4cb99" Name="Diagram1">
-        <EntityTypeShape EntityType="DominosModel.ItemOrdered" Width="1.5" PointX="5.125" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="DominosModel.Menu" Width="1.5" PointX="7.625" PointY="0.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="DominosModel.Price" Width="1.5" PointX="6.125" PointY="3.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="DominosModel.User" Width="1.5" PointX="0.75" PointY="1.25" IsExpanded="true" />
-        <AssociationConnector Association="DominosModel.FK__ItemOrder__MenuI__36B12243" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="DominosModel.Menu" Width="1.5" PointX="10.5" PointY="3.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="DominosModel.Price" Width="1.5" PointX="7.5" PointY="2.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="DominosModel.User" Width="1.5" PointX="0.75" PointY="0.625" IsExpanded="true" />
         <AssociationConnector Association="DominosModel.FK__Price__MenuId__2B3F6F97" ManuallyRouted="false" />
-        <EntityTypeShape EntityType="DominosModel.Cart" Width="1.5" PointX="10.5" PointY="1.375" />
+        <EntityTypeShape EntityType="DominosModel.Order" Width="1.5" PointX="2.875" PointY="0.625" />
+        <AssociationConnector Association="DominosModel.FK__Order__OrderedBy__2E1BDC42" />
+        <EntityTypeShape EntityType="DominosModel.ItemOrdered" Width="1.5" PointX="5" PointY="0.5" />
+        <AssociationConnector Association="DominosModel.FK__ItemOrder__Order__3A4CA8FD" />
+        <AssociationConnector Association="DominosModel.FK__ItemOrder__Produ__3B40CD36" />
+        <EntityTypeShape EntityType="DominosModel.Cart" Width="1.5" PointX="2.375" PointY="3.125" />
         <AssociationConnector Association="DominosModel.FK__Cart__MenuId__2EDAF651" />
         <AssociationConnector Association="DominosModel.FK__Cart__OrderedBy__2FCF1A8A" />
         <AssociationConnector Association="DominosModel.FK__Cart__ProductId__32AB8735" />
-        <EntityTypeShape EntityType="DominosModel.Order" Width="1.5" PointX="3.125" PointY="1.5" />
-        <AssociationConnector Association="DominosModel.FK__Order__OrderedBy__2E1BDC42" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

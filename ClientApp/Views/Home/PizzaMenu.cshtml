@@ -117,10 +117,6 @@
             $(".addToCart").click(function () {
                 let menuid = $(this).attr("menuid");
                 let productid = $(this).attr("productid");
-                let name = $(this).attr("pizzaname");
-                let price = $(this).attr("price");
-                let size = $(this).attr("size");
-                let img = $(this).attr("imgsrc");
 
                 $.ajax({
                     url: 'https://localhost:44309/api/Pizza/PostPizza',

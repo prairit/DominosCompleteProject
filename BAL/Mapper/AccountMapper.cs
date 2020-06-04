@@ -9,8 +9,16 @@ using DTO;
 
 namespace BAL.Mapper
 {
+    /// <summary>
+    /// This is the mapper class for account mapping
+    /// </summary>
     class AccountMapper
     {
+        /// <summary>
+        /// This method takes in a UserDto and converts it to Model object using Automapper
+        /// </summary>
+        /// <param name="userDto">Object of Dto type</param>
+        /// <returns>Object of model type</returns>
         public User UserMapper(UserDto userDto)
         {
             var configuration = new MapperConfiguration(cfg =>

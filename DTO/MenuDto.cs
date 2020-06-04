@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace DTO
 { 
+    /// <summary>
+    /// This class contains the properties of the Dto which is used while displaying the pizzas
+    /// </summary>
         public class MenuDto
         {
             public int MenuId { get; set; }

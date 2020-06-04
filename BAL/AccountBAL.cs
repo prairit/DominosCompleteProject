@@ -9,6 +9,9 @@ using BAL.Mapper;
 
 namespace BAL
 {
+    /// <summary>
+    /// This class contains the business logic for account handling
+    /// </summary>
     public class AccountBAL
     {
         AccountDAL accountDAL;
@@ -18,13 +21,21 @@ namespace BAL
             mapper = new AccountMapper();
             accountDAL = new AccountDAL();
         }
+        /// <summary>
+        /// This method takes the userDto and passes it to DAL in form of Model object
+        /// </summary>
+        /// <param name="userDto">Dto of user type</param>
+        /// <returns>Boolean success or failure</returns>
         public bool ValidateUser(UserDto userDto)
         {
             User userObj = mapper.UserMapper(userDto);
             bool val = accountDAL.ValidateUser(userObj);
             return val;
         }
-
+        /// <summary>
+        /// This method takes the userDto and passes it to DAL in form of Model object
+        /// </summary>
+        /// <param name="userDto">Dto of the user type</param>
         public void RegisterUser(UserDto userDto)
         {
             User userObj = mapper.UserMapper(userDto);

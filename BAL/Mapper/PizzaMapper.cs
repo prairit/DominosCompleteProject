@@ -7,8 +7,16 @@ using DTO;
 
 namespace BAL.Mapper
 {
+    /// <summary>
+    /// This is the mapper class for pizza mapping
+    /// </summary>
     class PizzaMapper
     {
+        /// <summary>
+        /// This method takes in a menu Model object and converts it to Dto object using Automapper
+        /// </summary>
+        /// <param name="MenuObj">menu Model object</param>
+        /// <returns>menu Dto object</returns>
         public MenuDto MenuMapper(Menu MenuObj)
         {
             var configuration = new MapperConfiguration(cfg =>
@@ -20,7 +28,11 @@ namespace BAL.Mapper
             var MenuDtoObj = mapper.Map<MenuDto>(MenuObj);
             return MenuDtoObj;
         }
-
+        /// <summary>
+        /// This method takes in a cart Dto object and converts it to Model object using Automapper
+        /// </summary>
+        /// <param name="cartSingleItemDto">cart Dto object</param>
+        /// <returns>cart Model object</returns>
         public Cart ToCartObjMapper(CartSingleItemDto cartSingleItemDto)
         {
             var configuration = new MapperConfiguration(cfg =>
@@ -31,7 +43,11 @@ namespace BAL.Mapper
             var CartObj = mapper.Map<Cart>(cartSingleItemDto);
             return CartObj;
         }
-
+        /// <summary>
+        /// This methodtakes in a cart Model object and converts it to Dto object using Automapper
+        /// </summary>
+        /// <param name="cartObj">cart Model object</param>
+        /// <returns>cart Dto object</returns>
         public MultipleItemCartDto ToCartDtoMapper(Cart cartObj)
         {
             var configuration = new MapperConfiguration(cfg =>

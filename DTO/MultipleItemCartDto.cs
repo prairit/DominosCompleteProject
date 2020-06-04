@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace DTO
 {
+    /// <summary>
+    /// This class contains the properties of the Dto which is used when the cart items are requested
+    /// </summary>
     public class MultipleItemCartDto
     {
         public int CartId { get; set; }

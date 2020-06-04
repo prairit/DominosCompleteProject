@@ -41,7 +41,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CartItemDto.cs" />
     <Compile Include="CartSingleItemDto.cs" />
     <Compile Include="MenuDto.cs" />
     <Compile Include="MultipleItemCartDto.cs" />

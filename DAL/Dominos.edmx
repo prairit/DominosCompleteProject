@@ -21,7 +21,7 @@
           </Key>
           <Property Name="ItemId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="OrderId" Type="int" Nullable="false" />
-          <Property Name="MenuId" Type="int" Nullable="false" />
+          <Property Name="ProductId" Type="int" Nullable="false" />
           <Property Name="Quantity" Type="int" />
         </EntityType>
         <EntityType Name="Menu">
@@ -94,6 +94,30 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK__ItemOrder__Order__3A4CA8FD">
+          <End Role="Order" Type="Self.Order" Multiplicity="1" />
+          <End Role="ItemOrdered" Type="Self.ItemOrdered" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Order">
+              <PropertyRef Name="OrderId" />
+            </Principal>
+            <Dependent Role="ItemOrdered">
+              <PropertyRef Name="OrderId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__ItemOrder__Produ__3B40CD36">
+          <End Role="Price" Type="Self.Price" Multiplicity="1" />
+          <End Role="ItemOrdered" Type="Self.ItemOrdered" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Price">
+              <PropertyRef Name="ProductId" />
+            </Principal>
+            <Dependent Role="ItemOrdered">
+              <PropertyRef Name="ProductId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK__Order__OrderedBy__2E1BDC42">
           <End Role="User" Type="Self.User" Multiplicity="0..1" />
           <End Role="Order" Type="Self.Order" Multiplicity="*" />
@@ -137,6 +161,14 @@
             <End Role="Price" EntitySet="Price" />
             <End Role="Cart" EntitySet="Cart" />
           </AssociationSet>
+          <AssociationSet Name="FK__ItemOrder__Order__3A4CA8FD" Association="Self.FK__ItemOrder__Order__3A4CA8FD">
+            <End Role="Order" EntitySet="Order" />
+            <End Role="ItemOrdered" EntitySet="ItemOrdered" />
+          </AssociationSet>
+          <AssociationSet Name="FK__ItemOrder__Produ__3B40CD36" Association="Self.FK__ItemOrder__Produ__3B40CD36">
+            <End Role="Price" EntitySet="Price" />
+            <End Role="ItemOrdered" EntitySet="ItemOrdered" />
+          </AssociationSet>
           <AssociationSet Name="FK__Order__OrderedBy__2E1BDC42" Association="Self.FK__Order__OrderedBy__2E1BDC42">
             <End Role="User" EntitySet="User" />
             <End Role="Order" EntitySet="Order" />
@@ -150,16 +182,6 @@
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="DominosModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
-        <EntityType Name="ItemOrdered">
-          <Key>
-            <PropertyRef Name="ItemId" />
-          </Key>
-          <Property Name="ItemId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="OrderId" Type="Int32" Nullable="false" />
-          <Property Name="MenuId" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="Menu" Relationship="Self.FK__ItemOrder__MenuI__36B12243" FromRole="ItemOrdered" ToRole="Menu" />
-          <Property Name="Quantity" Type="Int32" />
-        </EntityType>
         <EntityType Name="Menu">
           <Key>
             <PropertyRef Name="MenuId" />
@@ -167,7 +189,6 @@
           <Property Name="MenuId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="MenuName" Type="String" MaxLength="127" FixedLength="false" Unicode="true" />
           <Property Name="Category" Type="String" MaxLength="127" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="ItemOrdereds" Relationship="Self.FK__ItemOrder__MenuI__36B12243" FromRole="Menu" ToRole="ItemOrdered" />
           <NavigationProperty Name="Prices" Relationship="Self.FK__Price__MenuId__2B3F6F97" FromRole="Menu" ToRole="Price" />
           <Property Name="ImageSrc" Type="String" MaxLength="127" FixedLength="false" Unicode="true" />
           <Property Name="Description" Type="String" MaxLength="127" FixedLength="false" Unicode="true" />
@@ -190,20 +211,7 @@
           <Property Name="UserName" Type="String" MaxLength="127" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="Password" Type="String" MaxLength="127" FixedLength="false" Unicode="true" Nullable="false" />
           <NavigationProperty Name="Carts" Relationship="DominosModel.FK__Cart__OrderedBy__2FCF1A8A" FromRole="User" ToRole="Cart" />
-          <NavigationProperty Name="Orders" Relationship="DominosModel.FK__Order__OrderedBy__2E1BDC42" FromRole="User" ToRole="Order" />
         </EntityType>
-        <Association Name="FK__ItemOrder__MenuI__36B12243">
-          <End Role="Menu" Type="Self.Menu" Multiplicity="1" />
-          <End Role="ItemOrdered" Type="Self.ItemOrdered" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Menu">
-              <PropertyRef Name="MenuId" />
-            </Principal>
-            <Dependent Role="ItemOrdered">
-              <PropertyRef Name="MenuId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK__Price__MenuId__2B3F6F97">
           <End Role="Menu" Type="Self.Menu" Multiplicity="1" />
           <End Role="Price" Type="Self.Price" Multiplicity="*" />
@@ -217,17 +225,26 @@
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="DominosEntities" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="ItemOrdereds" EntityType="Self.ItemOrdered" />
           <EntitySet Name="Menus" EntityType="Self.Menu" />
           <EntitySet Name="Prices" EntityType="Self.Price" />
           <EntitySet Name="Users" EntityType="Self.User" />
-          <AssociationSet Name="FK__ItemOrder__MenuI__36B12243" Association="Self.FK__ItemOrder__MenuI__36B12243">
-            <End Role="Menu" EntitySet="Menus" />
-            <End Role="ItemOrdered" EntitySet="ItemOrdereds" />
-          </AssociationSet>
           <AssociationSet Name="FK__Price__MenuId__2B3F6F97" Association="Self.FK__Price__MenuId__2B3F6F97">
             <End Role="Menu" EntitySet="Menus" />
             <End Role="Price" EntitySet="Prices" />
+          </AssociationSet>
+          <EntitySet Name="Orders" EntityType="DominosModel.Order" />
+          <AssociationSet Name="FK__Order__OrderedBy__2E1BDC42" Association="DominosModel.FK__Order__OrderedBy__2E1BDC42">
+            <End Role="User" EntitySet="Users" />
+            <End Role="Order" EntitySet="Orders" />
+          </AssociationSet>
+          <EntitySet Name="ItemOrdereds" EntityType="DominosModel.ItemOrdered" />
+          <AssociationSet Name="FK__ItemOrder__Order__3A4CA8FD" Association="DominosModel.FK__ItemOrder__Order__3A4CA8FD">
+            <End Role="Order" EntitySet="Orders" />
+            <End Role="ItemOrdered" EntitySet="ItemOrdereds" />
+          </AssociationSet>
+          <AssociationSet Name="FK__ItemOrder__Produ__3B40CD36" Association="DominosModel.FK__ItemOrder__Produ__3B40CD36">
+            <End Role="Price" EntitySet="Prices" />
+            <End Role="ItemOrdered" EntitySet="ItemOrdereds" />
           </AssociationSet>
           <EntitySet Name="Carts" EntityType="DominosModel.Cart" />
           <AssociationSet Name="FK__Cart__MenuId__2EDAF651" Association="DominosModel.FK__Cart__MenuId__2EDAF651">
@@ -242,12 +259,60 @@
             <End Role="Price" EntitySet="Prices" />
             <End Role="Cart" EntitySet="Carts" />
           </AssociationSet>
-          <EntitySet Name="Orders" EntityType="DominosModel.Order" />
-          <AssociationSet Name="FK__Order__OrderedBy__2E1BDC42" Association="DominosModel.FK__Order__OrderedBy__2E1BDC42">
-            <End Role="User" EntitySet="Users" />
-            <End Role="Order" EntitySet="Orders" />
-          </AssociationSet>
         </EntityContainer>
+        <EntityType Name="Order">
+          <Key>
+            <PropertyRef Name="OrderId" />
+          </Key>
+          <Property Name="OrderId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="OrderTime" Type="DateTime" Precision="3" />
+          <Property Name="OrderedBy" Type="String" MaxLength="127" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <Association Name="FK__Order__OrderedBy__2E1BDC42">
+          <End Type="DominosModel.User" Role="User" Multiplicity="0..1" />
+          <End Type="DominosModel.Order" Role="Order" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="UserName" />
+            </Principal>
+            <Dependent Role="Order">
+              <PropertyRef Name="OrderedBy" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="ItemOrdered">
+          <Key>
+            <PropertyRef Name="ItemId" />
+          </Key>
+          <Property Name="ItemId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="OrderId" Type="Int32" Nullable="false" />
+          <Property Name="ProductId" Type="Int32" Nullable="false" />
+          <Property Name="Quantity" Type="Int32" />
+        </EntityType>
+        <Association Name="FK__ItemOrder__Order__3A4CA8FD">
+          <End Type="DominosModel.Order" Role="Order" Multiplicity="1" />
+          <End Type="DominosModel.ItemOrdered" Role="ItemOrdered" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Order">
+              <PropertyRef Name="OrderId" />
+            </Principal>
+            <Dependent Role="ItemOrdered">
+              <PropertyRef Name="OrderId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__ItemOrder__Produ__3B40CD36">
+          <End Type="DominosModel.Price" Role="Price" Multiplicity="1" />
+          <End Type="DominosModel.ItemOrdered" Role="ItemOrdered" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Price">
+              <PropertyRef Name="ProductId" />
+            </Principal>
+            <Dependent Role="ItemOrdered">
+              <PropertyRef Name="ProductId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <EntityType Name="Cart">
           <Key>
             <PropertyRef Name="CartId" />
@@ -297,43 +362,12 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityType Name="Order">
-          <Key>
-            <PropertyRef Name="OrderId" />
-          </Key>
-          <Property Name="OrderId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="OrderTime" Type="DateTime" Precision="3" />
-          <Property Name="OrderedBy" Type="String" MaxLength="127" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="User" Relationship="DominosModel.FK__Order__OrderedBy__2E1BDC42" FromRole="Order" ToRole="User" />
-        </EntityType>
-        <Association Name="FK__Order__OrderedBy__2E1BDC42">
-          <End Type="DominosModel.User" Role="User" Multiplicity="0..1" />
-          <End Type="DominosModel.Order" Role="Order" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="User">
-              <PropertyRef Name="UserName" />
-            </Principal>
-            <Dependent Role="Order">
-              <PropertyRef Name="OrderedBy" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="DominosModelStoreContainer" CdmEntityContainer="DominosEntities">
-          <EntitySetMapping Name="ItemOrdereds">
-            <EntityTypeMapping TypeName="DominosModel.ItemOrdered">
-              <MappingFragment StoreEntitySet="ItemOrdered">
-                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
-                <ScalarProperty Name="ItemId" ColumnName="ItemId" />
-                <ScalarProperty Name="OrderId" ColumnName="OrderId" />
-                <ScalarProperty Name="MenuId" ColumnName="MenuId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Menus">
             <EntityTypeMapping TypeName="DominosModel.Menu">
               <MappingFragment StoreEntitySet="Menu">
@@ -363,6 +397,25 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="Orders">
+            <EntityTypeMapping TypeName="DominosModel.Order">
+              <MappingFragment StoreEntitySet="Order">
+                <ScalarProperty Name="OrderedBy" ColumnName="OrderedBy" />
+                <ScalarProperty Name="OrderTime" ColumnName="OrderTime" />
+                <ScalarProperty Name="OrderId" ColumnName="OrderId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ItemOrdereds">
+            <EntityTypeMapping TypeName="DominosModel.ItemOrdered">
+              <MappingFragment StoreEntitySet="ItemOrdered">
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="ProductId" ColumnName="ProductId" />
+                <ScalarProperty Name="OrderId" ColumnName="OrderId" />
+                <ScalarProperty Name="ItemId" ColumnName="ItemId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="Carts">
             <EntityTypeMapping TypeName="DominosModel.Cart">
               <MappingFragment StoreEntitySet="Cart">
@@ -371,15 +424,6 @@
                 <ScalarProperty Name="Quantity" ColumnName="Quantity" />
                 <ScalarProperty Name="MenuId" ColumnName="MenuId" />
                 <ScalarProperty Name="CartId" ColumnName="CartId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Orders">
-            <EntityTypeMapping TypeName="DominosModel.Order">
-              <MappingFragment StoreEntitySet="Order">
-                <ScalarProperty Name="OrderedBy" ColumnName="OrderedBy" />
-                <ScalarProperty Name="OrderTime" ColumnName="OrderTime" />
-                <ScalarProperty Name="OrderId" ColumnName="OrderId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
