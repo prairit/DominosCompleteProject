@@ -52,6 +52,10 @@ namespace DominosFrontEnd.Controllers
                     HttpResponseMessage response = await client.PostAsJsonAsync("api/Account/IsValidUser", user);
                     if (response.IsSuccessStatusCode)
                     {
+                        var token =response.Content.ReadAsStringAsync();
+                        HttpCookie cookieToken= new HttpCookie("token");
+                        cookieToken.Value = token.Result;
+                        Response.Cookies.Add(cookieToken);
                         FormsAuthentication.SetAuthCookie(user.UserName, false);
                         return RedirectToAction("pizzaMenu", "Home");
                     }
@@ -88,6 +92,10 @@ namespace DominosFrontEnd.Controllers
                     HttpResponseMessage response = await client.PostAsJsonAsync("api/Account/RegisterUser", user);
                     if (response.IsSuccessStatusCode)
                     {
+                        var token = response.Content.ReadAsStringAsync();
+                        HttpCookie cookieToken = new HttpCookie("token");
+                        cookieToken.Value = token.Result;
+                        Response.Cookies.Add(cookieToken);
                         FormsAuthentication.SetAuthCookie(user.UserName, false);
                         return RedirectToAction("pizzaMenu", "Home");
                     }

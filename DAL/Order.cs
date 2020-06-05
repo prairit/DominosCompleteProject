@@ -17,7 +17,8 @@ namespace DAL
         public int OrderId { get; set; }
         public Nullable<System.DateTime> OrderTime { get; set; }
         public string OrderedBy { get; set; }
-    
+
+
         public virtual User User { get; set; }
     }
 }

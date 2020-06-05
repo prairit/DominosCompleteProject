@@ -50,6 +50,16 @@
 @section scripts{
     <script>
         $(document).ready(function () {
+            var token;
+            let parts = document.cookie.split("; token=");
+            console.log(parts);
+                token = parts[0].slice(parts[0].indexOf("token")+7,parts[0].length-1);
+                console.log(token);
+            $.ajaxSetup({
+              headers : {
+                    'Authorization': "Bearer " + token
+              }
+            });
             displayCart();
             addPlaceOrderRequest();
         });
@@ -81,7 +91,10 @@
                 $("#grandTotal").append("₹" + (subTotal + subTotal * 0.05).toFixed(2));
                 $("#cartData").append(content);
                 addChangeQuantityEvent();
-            });
+            })
+            .fail(function () {
+                    location.href = "/account/logout";
+                });
         }
 
         function addChangeQuantityEvent() {

@@ -41,5 +41,16 @@ namespace BAL
             User userObj = mapper.UserMapper(userDto);
             accountDAL.RegisterUser(userObj);
         }
+
+        public List<OrderDto> GetOrders(string username)
+        {
+            var ordersList = accountDAL.GetOrders(username);
+            List<OrderDto> orderDtosList = new List<OrderDto>();
+            foreach(var item in ordersList)
+            {
+                orderDtosList.Add(mapper.OrderMapper(item));
+            }
+            return orderDtosList;
+        }
     }
 }

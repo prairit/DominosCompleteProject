@@ -29,5 +29,17 @@ namespace BAL.Mapper
             var UserObj = mapper.Map<User>(userDto);
             return UserObj;
         }
+
+        public OrderDto OrderMapper(Order orderObj)
+        {
+            var configuration = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<Order, OrderDto>();
+                cfg.CreateMap<ItemOrdered, ItemOrderedDto>();
+            });
+            var mapper = configuration.CreateMapper();
+            var orderDto = mapper.Map<OrderDto>(orderObj);
+            return orderDto;
+        }
     }
 }

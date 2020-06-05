@@ -37,5 +37,11 @@ namespace DAL
             context.Users.Add(userObj);
             context.SaveChanges();            
         }
+
+        public List<Order> GetOrders(string username)
+        {
+            var orders =context.Orders.Where(order => order.OrderedBy == username).ToList();
+            return orders;
+        }
     }
 }

@@ -42,8 +42,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CartSingleItemDto.cs" />
+    <Compile Include="ItemOrderedDto.cs" />
     <Compile Include="MenuDto.cs" />
     <Compile Include="MultipleItemCartDto.cs" />
+    <Compile Include="OrderDto.cs" />
     <Compile Include="PriceDto.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UserDto.cs" />

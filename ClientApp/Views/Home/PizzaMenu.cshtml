@@ -71,6 +71,16 @@
     {
     <script>
         $(document).ready(function () {
+            var token;
+            let parts = document.cookie.split("; token=");
+            console.log(parts);
+                token = parts[0].slice(parts[0].indexOf("token")+7,parts[0].length-1);
+                console.log(token);
+            $.ajaxSetup({
+              headers : {
+                    'Authorization': "Bearer " + token
+              }
+            });
             $.getJSON("https://localhost:44309/api/pizza/getpizzas", function (data) {
                 console.log(data);
                 let card;
@@ -90,7 +100,7 @@
                                 value="${data[i].Prices[j].ProductId}">
                                 ${data[i].Prices[j].Size} ₹${data[i].Prices[j].PriceOfProduct}</option>`;
                     }
-                        card+=      `</select>
+                    card += `</select>
                                     <button type="button" class="btn btn-outline-success btn-sm addToCart mt-2"
                                     productid="${data[i].Prices[0].ProductId}" pizzaName="${data[i].MenuName}" 
                                     price="${data[i].Prices[0].PriceOfProduct}" size="${data[i].Prices[0].Size}"
@@ -100,7 +110,7 @@
                     </div>`;
                     if (data[i].Prices.length == 1)
                         $('#pizzaMania').append(card);
-                    else if(data[i].Category == "Veg")
+                    else if (data[i].Category == "Veg")
                         $("#vegPizzas").append(card);
                     else
                         $("#nonVegPizzas").append(card);
@@ -108,7 +118,10 @@
                 addToCartEvent();
                 changeSizeEvent();
                 displayCart();
-            });
+            })
+                .fail(function () {
+                    location.href = "/account/logout";
+                });
 
 
         });
