@@ -87,6 +87,7 @@ namespace DAL
                 var itemOrdered = new ItemOrdered
                 {
                     OrderId = OrderObj.OrderId,
+                    MenuId=item.MenuId,
                     ProductId = item.ProductId,
                     Quantity = item.Quantity
                 };

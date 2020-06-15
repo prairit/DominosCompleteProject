@@ -36,6 +36,8 @@ namespace BAL.Mapper
             {
                 cfg.CreateMap<Order, OrderDto>();
                 cfg.CreateMap<ItemOrdered, ItemOrderedDto>();
+                cfg.CreateMap<Price, PriceDto>();
+                cfg.CreateMap<Menu, MenuDtoWithoutNav>();
             });
             var mapper = configuration.CreateMapper();
             var orderDto = mapper.Map<OrderDto>(orderObj);

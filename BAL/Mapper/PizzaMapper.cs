@@ -53,7 +53,7 @@ namespace BAL.Mapper
             var configuration = new MapperConfiguration(cfg =>
             {
                 cfg.CreateMap<Cart, MultipleItemCartDto>();
-                cfg.CreateMap<Menu, MenuDto>();
+                cfg.CreateMap<Menu, MenuDtoWithoutNav>();
                 cfg.CreateMap<Price, PriceDto>();
             });
             var mapper = configuration.CreateMapper();

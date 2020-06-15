@@ -17,7 +17,7 @@ namespace DTO
         public string OrderedBy { get; set; }
         public int ProductId { get; set; }
 
-        public virtual MenuDto Menu { get; set; }
+        public virtual MenuDtoWithoutNav Menu { get; set; }
         public virtual PriceDto Price { get; set; }
     }
 }

@@ -1,0 +1,47 @@
+﻿
+@{
+    ViewBag.Title = "Orders";
+}
+<link rel="stylesheet" href="~/css/Orders.css">
+<div id="ordersDiv" class="container">
+</div>
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            var token;
+            let parts = document.cookie.split("; token=");
+            console.log(parts);
+            token = parts[0].slice(parts[0].indexOf("token") + 7, parts[0].length - 1);
+            console.log(token);
+            $.ajaxSetup({
+                headers: {
+                    'Authorization': "Bearer " + token
+                }
+            });
+            $.getJSON("https://localhost:44309/api/account/GetOrders/@User.Identity.Name", function (data) {
+                console.log(data);
+                for (let index in data) {
+                    let orderRow = `<div class="orderRow p-4">
+                                <h6>OrderId ${data[index].OrderId}</h6>
+                                <h6>OrderTime ${data[index].OrderTime}</h6>
+                                <div class="row px-5">`;
+                    for (let index2 in data[index].itemOrdereds) {
+                        orderRow += `<div class="card col-lg-3 col-md-6 p-0 mx-auto my-3"><div class="card-body p-0">
+                                    <img src="${data[index].itemOrdereds[index2].Menu.ImageSrc}" class="card-img-top" alt="...">
+                                    <div class="p-3"><h5>${data[index].itemOrdereds[index2].Menu.MenuName}</h5>
+                                    <h6>${data[index].itemOrdereds[index2].Price.Size}</h6>
+                                    <h6>Quantity ${data[index].itemOrdereds[index2].Quantity}</h6>
+                                    </div></div></div>`;
+                    }
+                    orderRow += `</div><hr/></div>`;
+                $("#ordersDiv").append(orderRow);
+                }
+            })
+                .fail(function () {
+                    location.href = "/account/logout";
+                });
+        });
+    </script>
+
+}
+

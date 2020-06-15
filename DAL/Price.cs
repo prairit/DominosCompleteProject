@@ -18,6 +18,7 @@ namespace DAL
         public Price()
         {
             this.Carts = new HashSet<Cart>();
+            this.ItemOrdereds = new HashSet<ItemOrdered>();
         }
     
         public int ProductId { get; set; }
@@ -27,5 +28,8 @@ namespace DAL
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Cart> Carts { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ItemOrdered> ItemOrdereds { get; set; }
+        public virtual Menu Menu { get; set; }
     }
 }

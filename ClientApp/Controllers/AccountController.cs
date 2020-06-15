@@ -45,7 +45,7 @@ namespace DominosFrontEnd.Controllers
             {
                 using(var client = new HttpClient())
                 {
-                    client.BaseAddress = new Uri("https://localhost:44309/");
+                    client.BaseAddress = new Uri(System.Configuration.ConfigurationManager.AppSettings["ApiAddress"].ToString());
                     client.DefaultRequestHeaders.Accept.Clear();
                     client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                     //GET Method  
@@ -85,7 +85,7 @@ namespace DominosFrontEnd.Controllers
             {
                 using (var client = new HttpClient())
                 {
-                    client.BaseAddress = new Uri("https://localhost:44309/");
+                    client.BaseAddress = new Uri(System.Configuration.ConfigurationManager.AppSettings["ApiAddress"].ToString());
                     client.DefaultRequestHeaders.Accept.Clear();
                     client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                     //GET Method  
@@ -113,6 +113,11 @@ namespace DominosFrontEnd.Controllers
         {
             FormsAuthentication.SignOut();
             return RedirectToAction("Login");
+        }
+
+        public ActionResult Orders()
+        {
+            return View();
         }
     }
 }
